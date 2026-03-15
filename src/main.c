@@ -4,23 +4,17 @@
 #include <gba_systemcalls.h>
 #include <gba_input.h>
 #include <stdio.h>
-#include <stdlib.h>
 
-#define SCREEN_W    30
-#define SCREEN_H    20
+#define SCREEN_W   30
+#define SCREEN_H   19
 #define BIRD_X      5
 #define GAP_SIZE    5
 #define NUM_PIPES   2
 #define PIPE_SPACE  15
 
-#define MOVE(x,y)   iprintf("\x1b[%d;%dH", (y)+1, (x)+1)
-#define CLR()       iprintf("\x1b[2J")
-#define HIDE_CURSOR iprintf("\x1b[?25l")
-
 typedef struct { int x, gapTop; } Pipe;
 
 static int  birdY;
-static int  birdSub;
 static int  birdVel;
 static int  score;
 static int  dead;
@@ -28,66 +22,65 @@ static int  frame;
 static Pipe pipes[NUM_PIPES];
 
 static unsigned int rng = 12345;
-static int randGap() {
+static int randGap(void) {
     rng = rng * 1664525u + 1013904223u;
     return 2 + (int)((rng >> 24) % (SCREEN_H - GAP_SIZE - 4));
 }
 
 static void initGame(void) {
     birdY   = SCREEN_H / 2;
-    birdSub = 0;
-    birdVel = -8;
+    birdVel = 0;
     score   = 0;
     dead    = 0;
     frame   = 0;
-
-    for (int i = 0; i < NUM_PIPES; i++) {
+    int i;
+    for (i = 0; i < NUM_PIPES; i++) {
         pipes[i].x      = SCREEN_W + 2 + i * PIPE_SPACE;
         pipes[i].gapTop = randGap();
     }
 }
 
-static void drawPipe(int px, int gapTop) {
-    if (px < 0 || px >= SCREEN_W) return;
-    for (int row = 0; row < SCREEN_H - 1; row++) {
-        MOVE(px, row);
-        if (row >= gapTop && row < gapTop + GAP_SIZE)
-            iprintf(" ");
-        else
-            iprintf("|");
-    }
-}
-
+// Build and print one row at a time — no ANSI escapes
 static void drawGame(void) {
-    CLR();
-    MOVE(0, SCREEN_H - 1);
-    iprintf("Score:%-4d  [A]=Flap", score);
+    iprintf("\x1b[2J"); // just one clear at top
+    int row, col;
+    for (row = 0; row < SCREEN_H; row++) {
+        char line[SCREEN_W + 2];
+        int i;
+        for (col = 0; col < SCREEN_W; col++) {
+            char ch = ' ';
 
-    for (int i = 0; i < NUM_PIPES; i++) {
-        drawPipe(pipes[i].x,     pipes[i].gapTop);
-        drawPipe(pipes[i].x + 1, pipes[i].gapTop);
+            // bird
+            if (col == BIRD_X && row == birdY) {
+                ch = '>';
+            } else {
+                // check pipes
+                for (i = 0; i < NUM_PIPES; i++) {
+                    if (col == pipes[i].x || col == pipes[i].x + 1) {
+                        if (row < pipes[i].gapTop ||
+                            row >= pipes[i].gapTop + GAP_SIZE) {
+                            ch = '|';
+                        }
+                        break;
+                    }
+                }
+            }
+            line[col] = ch;
+        }
+        line[SCREEN_W]   = '\n';
+        line[SCREEN_W+1] = '\0';
+        iprintf("%s", line);
     }
-
-    if (birdY >= 0 && birdY < SCREEN_H - 1) {
-        MOVE(BIRD_X, birdY);
-        iprintf(">");
-    }
+    iprintf("Score:%-4d [A]=Flap", score);
 }
 
-static void drawDead(void) {
-    CLR();
-    MOVE(8,  7); iprintf("** GAME OVER **");
-    MOVE(8,  9); iprintf("Score: %d", score);
-    MOVE(6, 11); iprintf("Press START to retry");
-}
-
-static void drawTitle(void) {
-    CLR();
-    MOVE(7,  5); iprintf("=== FLAPPY BIRD ===");
-    MOVE(8,  7); iprintf("(Text Edition)");
-    MOVE(6, 10); iprintf("A Button  =  Flap");
-    MOVE(4, 12); iprintf("Dodge the | pipes!");
-    MOVE(6, 15); iprintf("Press START to play");
+static void drawScreen(const char *l1, const char *l2, const char *l3) {
+    iprintf("\x1b[2J");
+    int i;
+    for (i = 0; i < 6; i++) iprintf("\n");
+    iprintf("  %s\n\n", l1);
+    iprintf("  %s\n\n", l2);
+    iprintf("  %s\n",   l3);
 }
 
 int main(void) {
@@ -95,9 +88,11 @@ int main(void) {
     irqEnable(IRQ_VBLANK);
     consoleDemoInit();
     SetMode(MODE_0 | BG0_ON);
-    HIDE_CURSOR;
 
-    drawTitle();
+    drawScreen("=== FLAPPY BIRD ===",
+               "A = Flap  |  pipes",
+               "START to begin!");
+
     while (1) {
         VBlankIntrWait();
         scanKeys();
@@ -111,27 +106,36 @@ int main(void) {
         scanKeys();
 
         if (dead) {
-            drawDead();
+            char buf[20];
+            iprintf("\x1b[2J");
+            int i;
+            for (i = 0; i < 7; i++) iprintf("\n");
+            iprintf("  ** GAME OVER **\n\n");
+            iprintf("  Score: %d\n\n", score);
+            iprintf("  START to retry");
             if (keysDown() & KEY_START) initGame();
             continue;
         }
 
+        // Input
         if (keysDown() & KEY_A) {
-            birdVel = -10;
+            birdVel = -3;
         }
 
-        birdSub += birdVel;
-        birdVel += 2;
-        if (birdVel > 12) birdVel = 12;
-
-        birdY  += birdSub / 4;
-        birdSub %= 4;
-
+        // Physics every 2 frames
         if (frame % 2 == 0) {
-            for (int i = 0; i < NUM_PIPES; i++) {
+            birdVel++;
+            if (birdVel > 3) birdVel = 3;
+            birdY += birdVel;
+        }
+
+        // Scroll pipes every 3 frames
+        if (frame % 3 == 0) {
+            int i;
+            for (i = 0; i < NUM_PIPES; i++) {
                 pipes[i].x--;
-                if (pipes[i].x < -2) {
-                    pipes[i].x      = SCREEN_W + PIPE_SPACE - 2;
+                if (pipes[i].x < -1) {
+                    pipes[i].x      = SCREEN_W + PIPE_SPACE;
                     pipes[i].gapTop = randGap();
                     score++;
                 }
@@ -140,12 +144,12 @@ int main(void) {
 
         frame++;
 
-        if (birdY < 0 || birdY >= SCREEN_H - 1) {
-            dead = 1;
-            continue;
+        // Collisions
+        if (birdY < 0 || birdY >= SCREEN_H) {
+            dead = 1; continue;
         }
-
-        for (int i = 0; i < NUM_PIPES; i++) {
+        int i;
+        for (i = 0; i < NUM_PIPES; i++) {
             if (BIRD_X == pipes[i].x || BIRD_X == pipes[i].x + 1) {
                 if (birdY < pipes[i].gapTop ||
                     birdY >= pipes[i].gapTop + GAP_SIZE) {
