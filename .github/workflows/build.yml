@@ -15,9 +15,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install devkitARM
-        uses: devkitpro/pacman-action@v1.0.4
-        with:
-          packages: gba-dev
+        run: |
+          sudo apt-get install -y wget
+          wget https://apt.devkitpro.org/install-devkitpro-pacman
+          chmod +x install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman <<< "Y"
+          sudo dkp-pacman -Sy --noconfirm gba-dev
 
       - name: Build ROM
         run: |
