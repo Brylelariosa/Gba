@@ -10,11 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: devkitpro/devkitarm:latest
+      image: devkitpro/devkitpro:20240202
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install GBA dev tools
+        run: dkp-pacman -Sy --noconfirm gba-dev
 
       - name: Build ROM
         run: |
