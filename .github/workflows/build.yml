@@ -17,7 +17,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install GBA dev tools
-        run: dkp-pacman -Sy --noconfirm gba-dev
+        run: |
+          dkp-pacman -Sy --noconfirm gba-dev
+          echo "--- Installed, checking for gba_rules ---"
+          find /opt/devkitpro -name "gba_rules" 2>/dev/null || echo "gba_rules NOT found"
+          ls /opt/devkitpro/ || echo "devkitpro dir empty"
 
       - name: Build ROM
         run: |
