@@ -16,18 +16,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install GBA dev tools
-        run: |
-          dkp-pacman -Sy --noconfirm gba-dev
-          echo "--- Installed, checking for gba_rules ---"
-          find /opt/devkitpro -name "gba_rules" 2>/dev/null || echo "gba_rules NOT found"
-          ls /opt/devkitpro/ || echo "devkitpro dir empty"
-
       - name: Build ROM
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=$DEVKITPRO/devkitARM
           export PATH=$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH
+          export LIBGBA=$DEVKITPRO/libgba
           make
 
       - name: Upload ROM artifact
