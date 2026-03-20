@@ -5,82 +5,99 @@
 #include <gba_input.h>
 #include <stdio.h>
 
-#define SCREEN_W   30
-#define SCREEN_H   19
-#define BIRD_X      5
-#define GAP_SIZE    5
-#define NUM_PIPES   2
-#define PIPE_SPACE  15
+// Write directly to BG tilemap — no iprintf flickering
+#define MAP   ((volatile unsigned short*)0x0600F800)
+#define SW    30
+#define SH    20
 
-typedef struct { int x, gapTop; } Pipe;
+static void cls(void) {
+    int i;
+    for (i = 0; i < 32 * SH; i++) MAP[i] = ' ';
+}
 
-static int  birdY;
-static int  birdVel;
-static int  score;
-static int  dead;
-static int  frame;
-static Pipe pipes[NUM_PIPES];
+static void putch(int x, int y, char c) {
+    if (x >= 0 && x < SW && y >= 0 && y < SH)
+        MAP[y * 32 + x] = (unsigned short)c;
+}
 
-static unsigned int rng = 12345;
-static int randGap(void) {
+static void putstr(int x, int y, const char *s) {
+    while (*s) putch(x++, y, *s++);
+}
+
+// itoa helper for score
+static void putint(int x, int y, int n) {
+    char buf[8];
+    int i = 7;
+    buf[i] = '\0';
+    if (n == 0) { buf[--i] = '0'; }
+    while (n > 0) { buf[--i] = '0' + (n % 10); n /= 10; }
+    putstr(x, y, buf + i);
+}
+
+// ---- Game ----
+#define BIRD_X    5
+#define GAP       5
+#define NPIPES    2
+#define PSPACE   15
+
+typedef struct { int x, top; } Pipe;
+
+static int   birdY, birdVel, score, dead, frame;
+static Pipe  pipes[NPIPES];
+static unsigned int rng = 99991;
+
+static int randTop(void) {
     rng = rng * 1664525u + 1013904223u;
-    return 2 + (int)((rng >> 24) % (SCREEN_H - GAP_SIZE - 4));
+    return 2 + (int)((rng >> 24) % (SH - GAP - 4));
 }
 
-static void initGame(void) {
-    birdY   = SCREEN_H / 2;
-    birdVel = 0;
-    score   = 0;
-    dead    = 0;
-    frame   = 0;
+static void init(void) {
     int i;
-    for (i = 0; i < NUM_PIPES; i++) {
-        pipes[i].x      = SCREEN_W + 2 + i * PIPE_SPACE;
-        pipes[i].gapTop = randGap();
+    birdY = SH / 2; birdVel = 0;
+    score = 0; dead = 0; frame = 0;
+    for (i = 0; i < NPIPES; i++) {
+        pipes[i].x   = SW + 2 + i * PSPACE;
+        pipes[i].top = randTop();
     }
 }
 
-// Build and print one row at a time — no ANSI escapes
-static void drawGame(void) {
-    iprintf("\x1b[2J"); // just one clear at top
-    int row, col;
-    for (row = 0; row < SCREEN_H; row++) {
-        char line[SCREEN_W + 2];
-        int i;
-        for (col = 0; col < SCREEN_W; col++) {
-            char ch = ' ';
+static void draw(void) {
+    int x, y, i;
+    cls();
 
-            // bird
-            if (col == BIRD_X && row == birdY) {
-                ch = '>';
-            } else {
-                // check pipes
-                for (i = 0; i < NUM_PIPES; i++) {
-                    if (col == pipes[i].x || col == pipes[i].x + 1) {
-                        if (row < pipes[i].gapTop ||
-                            row >= pipes[i].gapTop + GAP_SIZE) {
-                            ch = '|';
-                        }
-                        break;
-                    }
-                }
+    // pipes
+    for (i = 0; i < NPIPES; i++) {
+        for (y = 0; y < SH - 1; y++) {
+            if (y < pipes[i].top || y >= pipes[i].top + GAP) {
+                putch(pipes[i].x,     y, '|');
+                putch(pipes[i].x + 1, y, '|');
             }
-            line[col] = ch;
         }
-        line[SCREEN_W]   = '\n';
-        line[SCREEN_W+1] = '\0';
-        iprintf("%s", line);
     }
-    iprintf("Score:%-4d [A]=Flap", score);
+
+    // bird
+    putch(BIRD_X, birdY, '>');
+
+    // hud
+    putstr(0,  SH-1, "Score:");
+    putint(6,  SH-1, score);
+    putstr(20, SH-1, "[A]=Flap");
 }
 
-static void drawScreen(const char *l1, const char *l2, const char *l3) {
-    iprintf("\x1b[2J");
-    int i;
-    for (i = 0; i < 6; i++) iprintf("\n");
-    iprintf("  %s\n\n", l1);
-    iprintf("  %s\n\n", l2);
-    iprintf("  %s\n",   l3);
+static void titleScreen(void) {
+    cls();
+    putstr(6,  6,  "== FLAPPY  BIRD ==");
+    putstr(6,  9,  "A Button = Flap");
+    putstr(4,  11, "Dodge the || pipes");
+    putstr(4,  14, "START = Play");
+}
+
+static void deathScreen(void) {
+    cls();
+    putstr(7,  7,  "** GAME OVER **");
+    putstr(8,  9,  "Score: ");
+    putint(15, 9,  score);
+    putstr(4,  12, "START = Retry");
 }
 
 int main(void) {
@@ -89,54 +106,44 @@ int main(void) {
     consoleDemoInit();
     SetMode(MODE_0 | BG0_ON);
 
-    drawScreen("=== FLAPPY BIRD ===",
-               "A = Flap  |  pipes",
-               "START to begin!");
-
+    titleScreen();
     while (1) {
         VBlankIntrWait();
         scanKeys();
         if (keysDown() & KEY_START) break;
     }
 
-    initGame();
+    init();
 
     while (1) {
         VBlankIntrWait();
         scanKeys();
 
         if (dead) {
-            char buf[20];
-            iprintf("\x1b[2J");
-            int i;
-            for (i = 0; i < 7; i++) iprintf("\n");
-            iprintf("  ** GAME OVER **\n\n");
-            iprintf("  Score: %d\n\n", score);
-            iprintf("  START to retry");
-            if (keysDown() & KEY_START) initGame();
+            deathScreen();
+            if (keysDown() & KEY_START) init();
             continue;
         }
 
-        // Input
-        if (keysDown() & KEY_A) {
-            birdVel = -3;
-        }
+        // Flap
+        if (keysDown() & KEY_A) birdVel = -4;
 
-        // Physics every 2 frames
-        if (frame % 2 == 0) {
+        // Physics every 4 frames (~15 updates/sec)
+        if (frame % 4 == 0) {
             birdVel++;
-            if (birdVel > 3) birdVel = 3;
+            if (birdVel >  4) birdVel =  4;
+            if (birdVel < -4) birdVel = -4;
             birdY += birdVel;
         }
 
-        // Scroll pipes every 3 frames
-        if (frame % 3 == 0) {
+        // Scroll pipes every 5 frames (~12 moves/sec)
+        if (frame % 5 == 0) {
             int i;
-            for (i = 0; i < NUM_PIPES; i++) {
+            for (i = 0; i < NPIPES; i++) {
                 pipes[i].x--;
                 if (pipes[i].x < -1) {
-                    pipes[i].x      = SCREEN_W + PIPE_SPACE;
-                    pipes[i].gapTop = randGap();
+                    pipes[i].x   = SW + PSPACE;
+                    pipes[i].top = randTop();
                     score++;
                 }
             }
@@ -144,22 +151,21 @@ int main(void) {
 
         frame++;
 
-        // Collisions
-        if (birdY < 0 || birdY >= SCREEN_H) {
-            dead = 1; continue;
-        }
+        // Floor / ceiling
+        if (birdY < 0 || birdY >= SH - 1) { dead = 1; continue; }
+
+        // Pipe collision
         int i;
-        for (i = 0; i < NUM_PIPES; i++) {
+        for (i = 0; i < NPIPES; i++) {
             if (BIRD_X == pipes[i].x || BIRD_X == pipes[i].x + 1) {
-                if (birdY < pipes[i].gapTop ||
-                    birdY >= pipes[i].gapTop + GAP_SIZE) {
+                if (birdY < pipes[i].top ||
+                    birdY >= pipes[i].top + GAP) {
                     dead = 1;
                 }
             }
         }
 
-        drawGame();
+        draw();
     }
-
     return 0;
 }
