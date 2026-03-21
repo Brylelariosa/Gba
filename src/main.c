@@ -16,6 +16,7 @@
 
 #include <gba_video.h>
 #include <gba_interrupt.h>
+#include <gba_systemcalls.h>
 #include <gba_input.h>
 #include <string.h>
 
@@ -65,9 +66,6 @@ static const u16 TILE_COL[TILE_COUNT] = {
     RGB15(26, 22,  8),   // SAND
 };
 
-static const char TILE_NAME[TILE_COUNT][8] = {
-    "Air", "Grass", "Dirt", "Stone", "D.Stone", "Gravel", "Sand"
-};
 
 // ─────────────────────────────────────────────────────────────
 //  WORLD DATA
@@ -476,7 +474,9 @@ static void render_sky(void) {
             int r =  5 + t * 7 / 16;
             int g = 14 + t * 6 / 16;
             int b = 27 + t * 4 / 16;
-            if (r > 31) r = 31; if (g > 31) g = 31; if (b > 31) b = 31;
+            if (r > 31) r = 31;
+            if (g > 31) g = 31;
+            if (b > 31) b = 31;
             color = RGB15(r, g, b);
         }
         fill_row(0, sy, SCREEN_W, color);
