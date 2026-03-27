@@ -8,9 +8,9 @@
 #define CELL   14
 #define GCOLS  15
 #define GROWS  10
-#define MAPW   (GCOLS * CELL)   /* 210 */
-#define MAPH   (GROWS * CELL)   /* 140 */
-#define PANX   MAPW             /* 210 */
+#define MAPW   (GCOLS * CELL)
+#define MAPH   (GROWS * CELL)
+#define PANX   MAPW
 #define PANW   30
 
 /* ── Tile types ─────────────────────────────────────────────────────────── */
@@ -27,9 +27,16 @@
 #define MAXE  14
 #define MAXT  40
 #define MAXB  20
-#define NWP    6    /* number of path waypoints */
-#define NTYPE  3    /* number of tower types    */
-#define NWAVE  5    /* total waves              */
+#define NWP    6
+#define NTYPE  3
+#define NWAVE  5
+
+/* ── Back-buffer in EWRAM ───────────────────────────────────────────────────
+   Draw everything here, then DMA the whole thing to VRAM in one shot
+   during VBlank – zero tearing, zero flicker.                              */
+#define BACKBUF_ADDR  0x02000000u
+#define BUF  ((u16*)BACKBUF_ADDR)   /* 240×160 × 2 bytes = 76 800 B in EWRAM */
+#define SCREEN_PIXELS (240 * 160)
 
 /* ── Palette (15-bit BGR) ───────────────────────────────────────────────── */
 #define C_GRASS  RGB15( 4,14, 4)
@@ -50,31 +57,31 @@
 typedef struct {
     u16 cost;
     u8  dmg;
-    u8  range;   /* in cells */
-    u8  cd;      /* max cooldown in frames */
-    u16 body;    /* body colour */
-    u16 tip;     /* barrel / tip colour */
+    u8  range;
+    u8  cd;
+    u16 body;
+    u16 tip;
 } TDef;
 
 /* ── Entity structs ─────────────────────────────────────────────────────── */
 typedef struct {
-    s16 x, y;       /* centre, pixels */
-    u8  wp;         /* next waypoint index */
+    s16 x, y;
+    u8  wp;
     s16 hp, mhp;
-    u8  spd;        /* pixels per frame */
+    u8  spd;
     u8  alive;
 } Enemy;
 
 typedef struct {
     u8  col, row;
     u8  type;
-    u8  cd;         /* cooldown remaining */
+    u8  cd;
     u8  on;
 } Tower;
 
 typedef struct {
     s16 x, y;
-    u8  target;     /* enemy index */
+    u8  target;
     u8  dmg;
     u8  spd;
     u8  on;
@@ -91,8 +98,8 @@ extern Tower  gtwrs[MAXT];
 extern Bullet gblts[MAXB];
 extern int    gntwrs;
 extern int    glives, ggold, gscore, gwave;
-extern int    gcol, grow;   /* cursor grid position */
-extern int    gsel;         /* selected tower type  */
+extern int    gcol, grow;
+extern int    gsel;
 extern int    gstate;
 
 /* ── API ────────────────────────────────────────────────────────────────── */
