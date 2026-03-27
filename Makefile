@@ -10,7 +10,7 @@ include $(DEVKITARM)/gba_rules
 #---------------------------------------------------------------------------------
 TARGET   := game
 BUILD    := build
-SOURCES  := source
+SOURCES  := src          # <-- was "source", your repo uses src
 INCLUDES := include
 DATA     :=
 
