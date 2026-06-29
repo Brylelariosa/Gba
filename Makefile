@@ -19,7 +19,7 @@ ARCH    := -mthumb -mthumb-interwork
 CFLAGS  := -Wall -Wextra -O2 \
             -mcpu=arm7tdmi -mtune=arm7tdmi \
             -fomit-frame-pointer -fno-strict-aliasing \
-            -std=c99 \
+            -std=gnu11 \
             $(ARCH)
 
 CFLAGS  += $(INCLUDE)
