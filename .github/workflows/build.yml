@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,16 +17,50 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Print tool versions
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=$DEVKITPRO/devkitARM
+          export PATH=$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH
+          echo "=== Compiler Version ==="
+          arm-none-eabi-gcc --version
+          echo "=== libgba location ==="
+          ls $DEVKITPRO/libgba/
+          echo "=== devkitARM contents ==="
+          ls $DEVKITARM/
+
       - name: Build ROM
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=$DEVKITPRO/devkitARM
           export PATH=$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH
           export LIBGBA=$DEVKITPRO/libgba
-          make
+          make 2>&1 | tee build.log
+          echo "=== ROM Size ==="
+          ls -lh *.gba 2>/dev/null || echo "No .gba found"
+          wc -c *.gba 2>/dev/null | awk '{printf "ROM: %d bytes (%.2f KB)\n",$1,$1/1024}' || true
 
-      - name: Upload ROM artifact
+      - name: Upload ROM
         uses: actions/upload-artifact@v4
         with:
-          name: game.gba
+          name: CellAutoLab-ROM
           path: "*.gba"
+
+      - name: Upload ELF
+        uses: actions/upload-artifact@v4
+        with:
+          name: CellAutoLab-ELF
+          path: "*.elf"
+
+      - name: Upload MAP
+        uses: actions/upload-artifact@v4
+        with:
+          name: CellAutoLab-MAP
+          path: "build/*.map"
+
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-log
+          path: build.log
