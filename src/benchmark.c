@@ -1,6 +1,7 @@
 #include "benchmark.h"
 #include "simulation.h"
 #include "renderer.h"
+#include "themes.h"
 #include <string.h>
 
 BenchResult g_bench;
