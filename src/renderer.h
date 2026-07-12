@@ -1,8 +1,3 @@
----
-
-## `src/renderer.h`
-
-```c
 #ifndef RENDERER_H
 #define RENDERER_H
 
