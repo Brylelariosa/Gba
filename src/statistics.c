@@ -1,6 +1,7 @@
 #include "statistics.h"
 #include "simulation.h"
 #include "renderer.h"
+#include "themes.h"
 #include <string.h>
 
 Stats g_stats;
@@ -35,7 +36,6 @@ void stats_update(void) {
 /* Draw a scrolling mini-graph in the sim area (top-left corner) */
 void stats_draw(void) {
     /* Graph area: x=0, y=0, w=120, h=30 */
-    /* Background */
     renderer_fill_rect(0, 0, 120, 30, PAL_UI_BG);
     renderer_draw_string(2, 2, "Pop", PAL_UI_TXT);
     renderer_draw_uint(22, 2, g_sim.population, PAL_ALIVE);
