@@ -9,10 +9,10 @@ int g_repeat_timer  = 0;
 #define REPEAT_RATE    4
 
 void input_update(void) {
-    u16 raw      = ~REG_KEYS & KEY_MASK;
-    g_keys_pressed  = raw & ~g_keys_held;
-    g_keys_released = ~raw & g_keys_held;
-    g_keys_held     = raw;
+    scanKeys();
+    g_keys_held     = keysHeld();
+    g_keys_pressed  = keysDown();
+    g_keys_released = keysUp();
     if (g_keys_held) g_repeat_timer++;
     else              g_repeat_timer = 0;
 }
