@@ -29,7 +29,10 @@ extern int g_theme;
 void themes_init(int idx);
 void themes_apply(int idx);
 
-/* GBA BGR555 colour helper */
+/* GBA BGR555 colour helper (libgba's gba_video.h already defines this;
+   guard avoids a harmless redefinition warning) */
+#ifndef RGB5
 #define RGB5(r,g,b) ((u16)((r)|((g)<<5)|((b)<<10)))
+#endif
 
 #endif
