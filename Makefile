@@ -8,7 +8,7 @@ endif
 include $(DEVKITARM)/gba_rules
 
 #---------------------------------------------------------------------------------
-TARGET    := CellAutoLab
+TARGET    := Embervale
 BUILD     := build
 SOURCES   := src
 INCLUDES  := src
@@ -25,7 +25,7 @@ CFLAGS  := -Wall -Wextra -O2 \
 CFLAGS  += $(INCLUDE)
 
 ASFLAGS := $(ARCH)
-LDFLAGS  = $(ARCH) -Wl,-Map,$(BUILD)/$(TARGET).map
+LDFLAGS  = $(ARCH) -Wl,-Map,$(TARGET).map
 
 LIBS    := -lgba
 LIBDIRS := $(DEVKITPRO)/libgba

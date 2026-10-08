@@ -1,0 +1,16 @@
+10 shot
+60 shot
+70 keys 8
+72 keys 0
+100 shot
+110 keys 16
+112 keys 0
+140 shot
+150 keys 1
+152 keys 0
+200 shot
+260 keys 1
+262 keys 0
+300 keys 1
+302 keys 0
+340 shot

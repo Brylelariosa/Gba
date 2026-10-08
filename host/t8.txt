@@ -1,0 +1,38 @@
+5 newgame 2
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 xp 300
+171 gold 777
+240 keys 8
+242 keys 0
+260 keys 256
+262 keys 0
+270 keys 256
+272 keys 0
+280 keys 256
+282 keys 0
+290 keys 1
+292 keys 0
+310 keys 128
+312 keys 0
+320 keys 128
+322 keys 0
+330 keys 1
+332 keys 0
+400 shot
+420 keys 8
+422 keys 0
+440 shot
+450 keys 128
+452 keys 0
+460 keys 1
+462 keys 0
+560 shot
