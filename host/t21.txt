@@ -1,0 +1,33 @@
+5 newgame 0
+10 god 1
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 level 12
+171 flags 2
+172 warp 2 15 12
+260 killall
+261 place 15 12 1
+262 give 42 1
+265 shot
+268 keys 1
+269 keys 0
+275 shot
+300 shot
+330 dump 0
+331 tileflags 15 11
+400 warp 3 4 27
+470 killall
+471 place 6 20 1
+490 shot
+510 place 21 8 1
+530 shot
+540 place 7 12 1
+560 shot

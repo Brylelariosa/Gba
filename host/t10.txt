@@ -1,0 +1,36 @@
+5 newgame 3
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 hp 10
+171 place 24 10 1
+190 keys 1
+192 keys 0
+240 keys 1
+242 keys 0
+300 shot
+310 keys 1
+312 keys 0
+330 shot
+335 keys 1
+337 keys 0
+380 shot
+400 place 27 20 1
+420 keys 1
+422 keys 0
+425 shot
+440 shot
+470 shot
+480 place 27 12 1
+490 keys 64
+495 keys 0
+500 keys 1
+502 keys 0
+560 shot
