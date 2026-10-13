@@ -1,5 +1,0 @@
-build/
-build_host/
-*.gba
-*.elf
-__pycache__/
