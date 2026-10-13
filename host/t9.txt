@@ -1,0 +1,22 @@
+5 newgame 0
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 gold 100
+171 hp 5
+172 spawn 4 15 23
+173 spawn 4 14 23
+300 shot
+330 shot
+380 shot
+400 shot
+430 keys 1
+432 keys 0
+500 shot

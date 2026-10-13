@@ -1,0 +1,33 @@
+5 newgame 0
+10 god 1
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 killall
+172 warp 2 15 9
+175 seed 7
+300 shot
+330 shot
+360 shot
+390 shot
+420 shot
+450 shot
+480 shot
+510 shot
+540 shot
+570 shot
+600 shot
+630 shot
+660 shot
+690 shot
+720 shot
+750 shot
+780 shot
+810 shot
