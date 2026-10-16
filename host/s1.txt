@@ -1,0 +1,2 @@
+5 newgame 0
+10 savetest
