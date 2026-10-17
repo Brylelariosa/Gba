@@ -1,0 +1,26 @@
+5 newgame 0
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+200 keys 64
+230 keys 0
+231 spawn 1 15 19
+232 spawn 2 17 20
+250 shot
+260 keys 1
+264 shot
+266 shot
+268 shot
+270 keys 0
+290 shot
+300 keys 1
+304 shot
+306 keys 0
+330 shot
