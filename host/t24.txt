@@ -1,0 +1,106 @@
+5 newgame 0
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 god 1
+171 xp 300
+175 flags 2
+180 warp 2 15 29
+260 place 15 9 1
+380 shot
+420 shot
+450 shot
+480 shot
+510 shot
+540 shot
+600 bossdie 0
+630 shot
+680 shot
+730 shot
+780 shot
+830 shot
+900 shot
+1000 keys 8
+1002 keys 0
+1040 shot
+1100 keys 1
+1102 keys 0
+1140 keys 1
+1142 keys 0
+1180 keys 1
+1182 keys 0
+1220 keys 1
+1222 keys 0
+1260 keys 1
+1262 keys 0
+1300 keys 1
+1302 keys 0
+1340 keys 1
+1342 keys 0
+1380 keys 1
+1382 keys 0
+1420 keys 1
+1422 keys 0
+1460 keys 1
+1462 keys 0
+1500 keys 1
+1502 keys 0
+1540 keys 1
+1542 keys 0
+1580 keys 1
+1582 keys 0
+1620 keys 1
+1622 keys 0
+1660 keys 1
+1662 keys 0
+1700 keys 1
+1702 keys 0
+1740 keys 1
+1742 keys 0
+1780 keys 1
+1782 keys 0
+1820 keys 1
+1822 keys 0
+1860 keys 1
+1862 keys 0
+1900 keys 1
+1902 keys 0
+1940 keys 1
+1942 keys 0
+1980 keys 1
+1982 keys 0
+2020 keys 1
+2022 keys 0
+2060 keys 1
+2062 keys 0
+2100 keys 1
+2102 keys 0
+2140 keys 1
+2142 keys 0
+2180 keys 1
+2182 keys 0
+2220 keys 1
+2222 keys 0
+2260 keys 1
+2262 keys 0
+2300 keys 1
+2302 keys 0
+2340 keys 1
+2342 keys 0
+2380 keys 1
+2382 keys 0
+2420 keys 1
+2422 keys 0
+2460 keys 1
+2462 keys 0
+2500 keys 1
+2502 keys 0
+2600 shot
+2610 savetest

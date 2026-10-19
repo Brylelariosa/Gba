@@ -1,0 +1,22 @@
+5 newgame 0
+10 god 1
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 killall
+171 place 15 26 0
+175 keys 128
+260 keys 0
+270 shot
+272 flags 1024
+273 warp 0 15 26
+280 keys 128
+400 keys 0
+440 shot

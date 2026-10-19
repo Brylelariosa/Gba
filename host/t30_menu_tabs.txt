@@ -1,0 +1,59 @@
+# Items tab categories + quest tab with a main and two side quests
+5 newgame 0
+10 god 1
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 killall
+171 place 15 19 0
+172 level 12
+173 give 1 3
+173 give 2 2
+173 give 3 4
+173 give 7 1
+173 give 8 1
+173 give 26 1
+173 give 18 1
+173 give 20 1
+173 give 32 1
+173 give 37 1
+173 give 21 1
+173 give 43 5
+173 give 44 2
+173 give 47 3
+173 give 5 1
+174 equip 7
+175 quest 1 1 2
+175 quest 11 1 1
+175 quest 12 2 0
+176 flags 1
+200 keys 8
+202 keys 0
+220 keys 256
+222 keys 0
+232 shot
+240 keys 256
+242 keys 0
+250 keys 256
+252 keys 0
+260 keys 256
+262 keys 0
+270 keys 256
+272 keys 0
+290 shot
+300 keys 16
+302 keys 0
+312 shot
+320 keys 16
+322 keys 0
+332 shot
+340 keys 16
+342 keys 0
+352 shot

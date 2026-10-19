@@ -1,0 +1,31 @@
+5 newgame 0
+10 god 1
+40 keys 1
+42 keys 0
+70 keys 1
+72 keys 0
+100 keys 1
+102 keys 0
+130 keys 1
+132 keys 0
+160 keys 1
+162 keys 0
+170 killall
+171 place 15 18 0
+175 spawn 4 15 20
+176 spawn 4 14 20
+177 spawn 1 16 20
+200 keys 1
+201 keys 0
+204 shot
+208 keys 1
+209 keys 0
+212 shot
+217 keys 1
+218 keys 0
+222 shot
+226 keys 1
+227 keys 0
+232 shot
+237 shot
+245 shot
